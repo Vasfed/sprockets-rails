@@ -6,11 +6,10 @@ class SprocketsController < ActionController::Base
   end
 
   def show
-    sprocket = nil
-    if params[:id]
-      sprocket = SprocketsApplication.sprocket(params[:id])
+    sprocket = if params[:id]
+      SprocketsApplication.sprocket(params[:id])
     else
-      sprocket = SprocketsApplication
+      SprocketsApplication
     end
     render :text => sprocket.source, :content_type => "text/javascript"
   end
