@@ -9,49 +9,49 @@ class Sprocket
 		end
 	end
 
-	
-	
+
+
 	def source
-    concatenation.to_s
-  end
-  
-  def install_script
-    concatenation.save_to(asset_path)
-  end
-  
-  def install_assets
-    secretary.install_assets
-  end
+		concatenation.to_s
+	end
 
-  protected
-    def secretary
-      @secretary ||= Sprockets::Secretary.new(configuration.merge(:root => Rails.root))
-    end
+	def install_script
+		concatenation.save_to(asset_path)
+	end
 
-		def configuration
-			@configuration || {}
-		end
+	def install_assets
+		secretary.install_assets
+	end
 
-    def load_configuration(key = :default)
-      conf = YAML.load(IO.read(File.join(Rails.root, "config", "sprockets.yml"))) || {}
-	conf = conf | conf.delete(@lang) if @lang and conf[@lang]		
-	conf = conf | conf.delete(key) if conf[key]
-	conf
-    end
+	protected
+	def secretary
+		@secretary ||= Sprockets::Secretary.new(configuration.merge(:root => Rails.root))
+	end
 
-    def concatenation
-      secretary.reset! unless source_is_unchanged?
-      secretary.concatenation
-    end
+	def configuration
+		@configuration || {}
+	end
 
-    def asset_path
-      File.join(Rails.public_path, "sprockets.js")
-    end
+	def load_configuration(key = :default)
+		conf = YAML.load(IO.read(File.join(Rails.root, "config", "sprockets.yml"))) || {}
+		conf.collapse! @lang
+		conf.collapse! key
+		conf
+	end
 
-    def source_is_unchanged?
-      previous_source_last_modified, @source_last_modified = 
-        @source_last_modified, secretary.source_last_modified
-        
-      previous_source_last_modified == @source_last_modified
-    end
+	def concatenation
+		secretary.reset! unless source_is_unchanged?
+		secretary.concatenation
+	end
+
+	def asset_path
+		File.join(Rails.public_path, "sprockets.js")
+	end
+
+	def source_is_unchanged?
+		previous_source_last_modified, @source_last_modified = 
+		@source_last_modified, secretary.source_last_modified
+
+		previous_source_last_modified == @source_last_modified
+	end
 end
