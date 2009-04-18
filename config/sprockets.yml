@@ -1,8 +1,21 @@
 :asset_root: public
-:load_path:
-  - app/javascripts
-  - vendor/sprockets/*/src
-  - vendor/plugins/*/javascripts
-:source_files:
-  - app/javascripts/application.js
-  - app/javascripts/**/*.js
+:js:
+  :load_path:
+    - app/javascripts
+    - vendor/sprockets/*/javascripts
+    - vendor/plugins/*/javascripts
+  :source_files:
+    - app/javascripts/application.js
+    - app/javascripts/**/*.js
+:css:
+  :load_path:
+    - app/stylesheets
+    - vendor/sprockets/*/stylesheets
+    - vendor/plugins/*/stylesheets
+  :source_files:
+    - app/stylesheets/application.css
+    - app/stylesheets/**/*.css
+  :costom_conf:
+    :source_files:
+      - app/stylesheets/specific_files_will_get_included_after_defaults.css
+    

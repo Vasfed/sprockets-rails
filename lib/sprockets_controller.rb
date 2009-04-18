@@ -1,16 +1,14 @@
 class SprocketsController < ActionController::Base
-  caches_page :show
+  caches_page :index, :show
   
   def index
     show
   end
 
   def show
-    sprocket = if params[:id]
-      SprocketsApplication.sprocket(params[:id])
-    else
-      SprocketsApplication
-    end
-    render :text => sprocket.source, :content_type => "text/javascript"
+		respond_to do |format|
+			format.js  { render :text => Sprocket.new(:js,  params[:id]).source, :content_type => "text/javascript" }
+			format.css { render :text => Sprocket.new(:css, params[:id]).source, :content_type => "text/css" }
+		end
   end
 end
