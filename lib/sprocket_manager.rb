@@ -1,9 +1,9 @@
-class Sprocket
+class SprocketManager
 
 	def initialize(lang = :js, config = nil)
 		@lang = lang
 		if config.is_a? Symbol or config.is_a? String
-			@configuration = load_configuration(config)
+			@configuration = load_configuration(config.to_sym)
 		else
 			@configuration = config
 		end
@@ -15,13 +15,13 @@ class Sprocket
 		concatenation.to_s
 	end
 
-	def install_script
-		concatenation.save_to(asset_path)
-	end
-
-	def install_assets
-		secretary.install_assets
-	end
+	# def install_script
+	# 	concatenation.save_to(asset_path)
+	# end
+	# 
+	# def install_assets
+	# 	secretary.install_assets
+	# end
 
 	protected
 	def secretary
@@ -29,14 +29,16 @@ class Sprocket
 	end
 
 	def configuration
-		@configuration || {}
+		@configuration ||= load_configuration
 	end
 
 	def load_configuration(key = :default)
-		conf = YAML.load(IO.read(File.join(Rails.root, "config", "sprockets.yml"))) || {}
-		conf.collapse! @lang
-		conf.collapse! key
-		conf
+		returning conf = YAML.load_file(File.join(Rails.root, "config", "sprockets.yml")) || {} do
+			# conf.collapse! @lang
+			# conf.collapse! key
+			conf.merge! conf.delete(@lang) if conf[@lang]
+			conf.merge! conf.delete(key) if conf[key]
+		end
 	end
 
 	def concatenation
@@ -44,9 +46,9 @@ class Sprocket
 		secretary.concatenation
 	end
 
-	def asset_path
-		File.join(Rails.public_path, "sprockets.js")
-	end
+	# def asset_path
+	# 	File.join(Rails.public_path, "sprockets.js")
+	# end
 
 	def source_is_unchanged?
 		previous_source_last_modified, @source_last_modified = 
