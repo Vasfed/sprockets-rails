@@ -15,6 +15,9 @@ class SprocketManager
 		concatenation.to_s
 	end
 
+
+	# comented out because I'm not sure if it will still work
+
 	# def install_script
 	# 	concatenation.save_to(asset_path)
 	# end

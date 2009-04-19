@@ -17,5 +17,5 @@
     - app/stylesheets/**/*.css
   :costom_conf:
     :source_files:
-      - app/stylesheets/specific_files_will_get_included_after_defaults.css
+      - app/stylesheets/files_here_will_overwrite_default_source_files.css
     

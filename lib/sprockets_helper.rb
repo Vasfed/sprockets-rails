@@ -6,7 +6,7 @@ module SprocketsHelper
 	def sprockets_javascript_tag(name = nil)
 		javascript_include_tag sprockets_asset_path(name, :js)
 	end
-	alias_method :sprockets_include_tag, :sprockets_javascript_tag
+	alias_method :sprockets_include_tag, :sprockets_javascript_tag # backwards compatability
 	
 	def sprockets_stylesheet_tag(name = nil)
 		stylesheet_link_tag sprockets_asset_path(name, :css)
