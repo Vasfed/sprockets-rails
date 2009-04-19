@@ -1,6 +1,6 @@
 require "sprockets"
 require "sprockets_helper"
-require "sprocket"
+require "sprocket_manager"
 require "sprockets_application"
 
 class ActionController::Base
