@@ -7,8 +7,6 @@ The `sprockets-rails` plugin sets up your Rails application for use with [Sprock
 
 To source Sprockets' JavaScript concatenation from your HTML templates, use the provided `sprockets_include_tag` helper.
 
-`sprockets-rails` also includes a set of Rake tasks for generating the concatenation (`rake sprockets:install_script`) and installing provided assets (`rake sprockets:install_assets`). Run `sprockets:install_assets` any time you add or update a Sprockets plugin in your application. Add `sprockets:install_script` as a [Capistrano](http://www.capify.org/) post-deploy hook to generate the Sprockets concatenation on your servers automatically at deploy time.
-
 Here's a walkthrough of the installation process:
 
 1. `gem install --remote sprockets`
@@ -28,6 +26,8 @@ Here's a walkthrough of the installation process:
 4. Move your JavaScript source files from `public/javascripts/` into `app/javascripts/`. All files in all subdirectories of `app/javascripts/` will be required by Sprockets in alphabetical order, with the exception of `app/javascripts/application.js`, which is required _before any other file_. (You can change this behavior by editing the `source_files` line of `config/sprockets.yml`.)
 
 5. Adjust your HTML templates to call `<%= sprockets_include_tag %>` instead of `<%= javascript_include_tag ... %>`.
+
+6. NEW: As always, calling `<%= sprockets_include_tag %>` will give you the concatenation of all files specified in config.yml as :source_files. However, calling `<%= sprockets_include_tag 'file' %>` will look for 'file.js' in your :load_path, and just give you its concatenation.
 
 Once `sprockets-rails` is installed, you can check out Sprockets plugins into the `vendor/sprockets/` directory. By default, `sprockets-rails` configures Sprockets' load path to search `vendor/sprockets/*/src/`, as well as `vendor/plugins/*/javascripts/`. This means that the `javascripts/` directories of Rails plugins are automatically installed into your Sprockets load path.
 

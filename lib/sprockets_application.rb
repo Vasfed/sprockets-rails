@@ -1,47 +1,47 @@
-module SprocketsApplication
-  mattr_accessor :use_page_caching
-  self.use_page_caching = true
-  
-  class << self
-    def routes(map)
-      map.resource(:sprockets)
-    end
-    
-    def source
-      concatenation.to_s
-    end
-    
-    def install_script
-      concatenation.save_to(asset_path)
-    end
-    
-    def install_assets
-      secretary.install_assets
-    end
+class SprocketsApplication
+	cattr_accessor :use_page_caching
+	self.use_page_caching = true
 
-    protected
-      def secretary
-        @secretary ||= Sprockets::Secretary.new(configuration.merge(:root => RAILS_ROOT))
-      end
-    
-      def configuration
-        YAML.load(IO.read(File.join(RAILS_ROOT, "config", "sprockets.yml"))) || {}
-      end
+	def initialize(name = nil)
+		@name = name.blank? ? nil : name
+		@name = "#{@name}.js" unless @name && File.extname(@name) == '.js'
+	end
 
-      def concatenation
-        secretary.reset! unless source_is_unchanged?
-        secretary.concatenation
-      end
+	def source
+		concatenation.to_s
+	end
 
-      def asset_path
-        File.join(Rails.public_path, "sprockets.js")
-      end
+	protected
+	def secretary
+		@@secretary = {}
+		@@secretary[@name] ||= Sprockets::Secretary.new(configuration.merge(:root => RAILS_ROOT))
+	end
+	
+	def configuration
+		returning conf = YAML.load(IO.read(File.join(RAILS_ROOT, "config", "sprockets.yml"))) || {} do
+			if @name then
+				dir = conf[:load_path].find{|d| !Dir[File.join(d,@name)].empty? }
+				conf[:source_files] = [File.join(dir, @name)] if dir
+			end
+		end
+	end
 
-      def source_is_unchanged?
-        previous_source_last_modified, @source_last_modified = 
-          @source_last_modified, secretary.source_last_modified
-          
-        previous_source_last_modified == @source_last_modified
-      end
-  end
+	def concatenation
+		secretary.reset! unless source_is_unchanged?
+		secretary.concatenation
+	end
+
+
+	def source_is_unchanged?
+		previous_source_last_modified, @source_last_modified = 
+			@source_last_modified, secretary.source_last_modified
+
+		previous_source_last_modified == @source_last_modified
+	end
+
+	class << self
+		def routes(map)
+			map.resources(:sprockets)
+		end
+	end
 end
