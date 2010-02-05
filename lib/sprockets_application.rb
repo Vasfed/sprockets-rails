@@ -63,7 +63,7 @@ class SprocketsApplication
     # +use_page_caching?+ will always be false.
     # blatently ripped from 'more'
     def heroku?
-      !!ENV["HEROKU_ENV"]
+      ENV.any? {|key, value| key =~ /^heroku/i }
     end
 	end
 end
